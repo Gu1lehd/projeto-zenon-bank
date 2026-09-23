@@ -1,7 +1,9 @@
 package br.com.zenon;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
     void main() {
@@ -37,7 +39,7 @@ public class Main {
 
         transactionsEr.stream().limit(10).forEach(System.out::println);*/
 
-        System.out.println("----------------------------------------------------------------------------------");
+        /*System.out.println("----------------------------------------------------------------------------------");
 
         var ingestor = new TransactionIngestor();
         List<Transaction> list = ingestor.read("data/PS_20174392719_1491204439457_log.csv");
@@ -45,10 +47,40 @@ public class Main {
         IO.println("Linhas carregadas: " + list.size());
 
         FraudAnalyzer analyzer = new FraudAnalyzer(list);
-        analyzer.analyze();
+        analyzer.analyze();*/
 
+        System.out.println("----------------------------------------------------------------------------------");
 
+       TransactionIngestor ingestor = new TransactionIngestor();
+       List<Transaction> list = ingestor.read("data/PS_20174392719_1491204439457_log.csv");
 
+       String nameOrig = "C1868032458";
+
+       //-----Lista (pior caso)-------
+        TransactionListRepository listRepo = new TransactionListRepository(list);
+
+        long startList = System.nanoTime();
+        Optional<Transaction> fromList = listRepo.findByOriginName(nameOrig);
+        long endList = System.nanoTime();
+        long timeList = endList - startList;
+
+        System.out.println("List - encontrada: " + fromList.isPresent());
+        System.out.println("List - tempo (ns): " + timeList);
+        System.out.println("List - tempo (ms): " + timeList/1_000_000.0);
+
+        System.out.println("----------------------------------------------------------------------------------");
+
+        //--------Map-------
+        TransactionRepository mapRepo = new TransactionListRepository(list);
+
+        long startMap = System.nanoTime();
+        Optional<Transaction> fromMap = mapRepo.findByOriginName(nameOrig);
+        long endMap = System.nanoTime();
+        long timeMap = endMap - startMap;
+
+        System.out.println("Map - encontrada: " + fromMap.isPresent());
+        System.out.println("Map - tempo (ns): " + timeMap);
+        System.out.println("Map - tempo (ms): " + timeMap/1_000_000.0);
 
 
     }
