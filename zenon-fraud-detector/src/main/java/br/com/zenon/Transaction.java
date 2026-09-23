@@ -13,10 +13,10 @@ public record Transaction(int step,
 
 
     public Transaction {
-        Objects.requireNonNull(type, "Type required");
-        Objects.requireNonNull(amount, "Amount required");
-        Objects.requireNonNull(origin,"Namre Origini required");
-        Objects.requireNonNull(recipient,"Old Balance required");
+        Objects.requireNonNull(type, "Type pode ser nulo");
+        Objects.requireNonNull(amount, "Amount pode ser nulo");
+        Objects.requireNonNull(origin,"Name Origin não pode ser nulo");
+        Objects.requireNonNull(recipient,"Old Balance pode ser nulo");
 
         if (step < 1){
             throw new IllegalArgumentException("Step deve ser >= 1");
