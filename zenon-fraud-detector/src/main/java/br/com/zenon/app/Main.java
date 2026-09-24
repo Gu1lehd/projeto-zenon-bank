@@ -1,7 +1,10 @@
-package br.com.zenon;
+package br.com.zenon.app;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import br.com.zenon.model.Transaction;
+import br.com.zenon.ingestion.TransactionIngestor;
+import br.com.zenon.repository.TransactionListRepository;
+import br.com.zenon.repository.TransactionRepository;
+
 import java.util.List;
 import java.util.Optional;
 

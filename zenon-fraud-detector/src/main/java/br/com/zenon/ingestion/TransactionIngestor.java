@@ -1,5 +1,9 @@
-package br.com.zenon;
+package br.com.zenon.ingestion;
 
+
+import br.com.zenon.model.Transaction;
+import br.com.zenon.model.TransactionCustomer;
+import br.com.zenon.model.TransactionType;
 
 import java.math.BigDecimal;
 import java.nio.file.Files;
