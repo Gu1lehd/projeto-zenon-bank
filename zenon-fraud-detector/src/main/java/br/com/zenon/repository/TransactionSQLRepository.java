@@ -9,9 +9,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class TransactionSQLRepository implements TransactionRepository {
+
+    private static final String DELE_ALL_SQL = "TRUNCATE TABLE TRANSACTIONS";
 
     private static final String FIND_BY_ORIGIN_NAME_SQL = """
             SELECT step, type, amount,
@@ -53,6 +56,39 @@ public class TransactionSQLRepository implements TransactionRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar transação de " + nameOrig, e);
+        }
+    }
+
+    public void deleteAll() {
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELE_ALL_SQL)) {
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao limpar a tabela", e);
+        }
+    }
+
+    @Override
+    public void saveAll(List<Transaction> transactions) {
+        try (Connection connection = getConnection()) {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement statement = connection.prepareStatement(INSERT_SQL)) {
+                for (Transaction transaction : transactions) {
+                    bindInsertParameters(statement, transaction);
+                    statement.addBatch();
+                }
+
+                statement.executeBatch();
+                connection.commit();
+
+            } catch (SQLException e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao salvar lote de transação", e);
         }
     }
 
