@@ -13,6 +13,7 @@ import java.util.Optional;
 public class TransactionIngestor {
 
     private final TransactionParser parser = new TransactionParser();
+    public static final int FRAUD_LIMITER = 10_000;
 
     public List<Transaction> read(String filename) {
         Path path = Path.of(filename);
@@ -21,7 +22,7 @@ public class TransactionIngestor {
             List<String> lines = Files.readAllLines(path);
             return lines.stream()
                     .skip(1)
-                    .limit(10_000)
+                    .limit(FRAUD_LIMITER)
                     .map(parser::tryParse)
                     .flatMap(Optional::stream)
                     .toList();
